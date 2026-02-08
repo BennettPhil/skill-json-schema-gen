@@ -1,29 +1,40 @@
 ---
 name: json-schema-gen
-description: Infer JSON Schema from sample JSON data with type detection and pattern recognition
+description: Infers a JSON Schema from one or more sample JSON documents, supporting type detection, required fields, and array item schemas.
 version: 0.1.0
 license: Apache-2.0
 ---
 
 # JSON Schema Generator
 
-## Purpose
+Infers a JSON Schema (draft-07) from one or more sample JSON documents. Detects types, required fields, nested objects, array item schemas, and enum-like values.
 
-Infer a JSON Schema from one or more sample JSON documents. Produces a schema with appropriate types, required fields, nullable detection, array item types, and pattern recognition for common formats (dates, emails, URLs, UUIDs).
-
-## Quick Start
+## Usage
 
 ```bash
+# Infer schema from a single file
 ./scripts/run.sh sample.json
-cat sample1.json sample2.json | ./scripts/run.sh --stdin --merge
+
+# Infer from multiple samples (merges schemas)
+./scripts/run.sh sample1.json sample2.json
+
+# Read from stdin
+cat data.json | ./scripts/run.sh
+
+# Pretty or compact output
+./scripts/run.sh --compact sample.json
 ```
 
-## Reference Index
+## Options
 
-- **[references/api.md](references/api.md)** — Complete CLI interface documentation
-- **[references/usage-guide.md](references/usage-guide.md)** — Step-by-step walkthrough of common use cases
-- **[references/examples.md](references/examples.md)** — Concrete, copy-paste-ready examples
+- `--compact` — Output compact JSON (no indentation)
+- `--title TITLE` — Set the schema title
+- `--help` — Show usage information
 
-## Implementation
+## Features
 
-See `scripts/run.sh` (entry point) and `scripts/infer.py` (core logic).
+- Detects string, number, integer, boolean, null, object, and array types
+- Infers `required` fields by checking which keys appear in all samples
+- Merges multiple samples to produce a union schema
+- Detects array item types (homogeneous arrays get typed `items`)
+- Nested objects produce nested schemas recursively
